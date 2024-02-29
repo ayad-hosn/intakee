@@ -30,11 +30,9 @@ public class IntakeSub extends SubsystemBase {
 
   PWMSparkMax blinkinPWM = new PWMSparkMax(9);
 
-  CANSparkMax leftSide;
-  CANSparkMax rightSide;
-  CANSparkMax intakeRight;
-  CANSparkMax intakeLeft;
-  RelativeEncoder myEncoder = rightSide.getEncoder();
+  CANSparkMax m_arm;
+  CANSparkMax m_intake;
+  RelativeEncoder myEncoder = m_arm.getEncoder();
   double myAngle;
 
   /** Creates a new colorSensor. */
@@ -54,10 +52,8 @@ public class IntakeSub extends SubsystemBase {
     nodeIndicator(nodeIn);
 
     
-    leftSide = new CANSparkMax(0, MotorType.kBrushless);
-    rightSide = new CANSparkMax(1, MotorType.kBrushless);
-    intakeLeft = new CANSparkMax(2, MotorType.kBrushless);
-    intakeRight = new CANSparkMax(3, MotorType.kBrushless);
+    m_arm = new CANSparkMax(9, MotorType.kBrushless);
+    m_intake = new CANSparkMax(8, MotorType.kBrushless);
 
     SmartDashboard.putNumber("angle", myAngle);    
   }
@@ -87,28 +83,23 @@ public class IntakeSub extends SubsystemBase {
     myAngle = (myEncoder.getPosition() / 66)*360;
 
     if(myAngle <= 70){
-    leftSide.set(0.25);
-    //rightSide.set(0.25);
+    m_arm.set(0.25);
     }
     
   }
 
   public void takeNode(){
-    leftSide.set(0);
-    //rightSide.set(0);
+    m_arm.set(0);
 
-    intakeLeft.set(0.25);
-    //intakeRight.set(0.25);
+    m_intake.set(0.25);
 
     if(nodeIn){
-      intakeLeft.set(0);
-      //intakeRight.set(0);
+      m_intake.set(0);
     }
   }
 
   public void retractIntake(){
-    leftSide.set(-0.25);
-    //rightSide.set(-1);
+    m_arm.set(-0.25);
   }
 
 }
