@@ -38,6 +38,7 @@ public class IntakeSub extends SubsystemBase {
   /** Creates a new colorSensor. */
   public IntakeSub() {
     colorMatcher.addColorMatch(NodeColor);
+    myEncoder.setPosition(0);
   }
 
   @Override
@@ -49,8 +50,8 @@ public class IntakeSub extends SubsystemBase {
     SmartDashboard.putNumber("Detected green: ", mySensor.getGreen());
     SmartDashboard.putNumber("Detected blue: ", mySensor.getBlue());
     SmartDashboard.putNumber("distance: ", distance);
-    nodeIndicator(nodeIn);
-
+    
+    nodeIndicator();
     
     m_arm = new CANSparkMax(9, MotorType.kBrushless);
     m_intake = new CANSparkMax(8, MotorType.kBrushless);
@@ -65,14 +66,14 @@ public class IntakeSub extends SubsystemBase {
    
     if(mySensor.getRed() >= mySensor.getBlue() && mySensor.getRed()>=mySensor.getGreen()||mySensor.getGreen()-mySensor.getRed()<=10&&mySensor.getProximity()>50){
       nodeIn = true;
-    }else{
+    }else{      
       nodeIn = false;
     }
     
   }
 
-  public void nodeIndicator(boolean nodeStatus){
-    if(nodeStatus){
+  public void nodeIndicator(){
+    if(nodeIn){
       blinkinPWM.set(0.77); // green
     }else{
       blinkinPWM.set(0.61); // red
@@ -84,21 +85,18 @@ public class IntakeSub extends SubsystemBase {
 
     if(myAngle <= 70){
     m_arm.set(0.25);
+    }else{
+      m_arm.set(0);
     }
     
   }
 
   public void takeNode(){
-    m_arm.set(0);
-
     m_intake.set(0.25);
-
-    if(nodeIn){
-      m_intake.set(0);
-    }
   }
 
   public void retractIntake(){
+    m_intake.set(0);
     m_arm.set(-0.25);
   }
 
